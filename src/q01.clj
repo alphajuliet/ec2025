@@ -36,8 +36,18 @@
 
 (defn part2
   "Solution for part 2"
-  [fname])
-  
+  [fname]
+  (let [[words actions] (read-data fname)
+        index (reduce (fn [acc e]
+                        (let [dir (first e)
+                              x (Integer/parseInt (subs e 1))
+                              n (dec (count words))]
+                          (case dir
+                            \L (mod n (- acc x))
+                            \R (mod n (+ acc x)))))
+                      0
+                      actions)] 
+    (nth words index)))
 
 (comment
   (def testf1 "data/q01_p1_test.txt")
