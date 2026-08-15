@@ -69,6 +69,17 @@
          (filter engrave?)
          count)))
 
+(defn part3
+  "Solution for part 3"
+  [fname]
+  (let [a (read-data fname)
+        m (for [i (range 1001)
+                j (range 1001)]
+            (c-add a [i j]))]
+    (->> m
+         (filter engrave?)
+         count)))
+
 (comment
   (def testf1 "data/q02_p1_test.txt")
   (def inputf1 "data/q02_p1.txt")
@@ -80,7 +91,12 @@
   (def inputf2 "data/q02_p2.txt")
 
   (part2 testf2)
-  (part2 inputf2))
-  ;; not 1299
+  (part2 inputf2)
+
+  (def testf3 "data/q02_p3_test.txt")
+  (def inputf3 "data/q02_p3.txt")
+
+  (time (part3 testf3))
+  (time (part3 inputf3)))
 
 ;; The End
