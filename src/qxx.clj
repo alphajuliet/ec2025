@@ -18,7 +18,6 @@
 (comment
   (def testf1 "data/qxx_p1_test.txt")
   (def inputf1 "data/qxx_p1.txt")
-
   (def testf2 "data/qxx_p2_test.txt")
   (def inputf2 "data/qxx_p2.txt")
 
