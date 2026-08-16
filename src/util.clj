@@ -34,10 +34,19 @@
   [a b]
   (if (zero? b) a (recur b (mod a b))))
 
+#_(defn lcm
+    "Compute the lowest common multiple of a collection of integers"
+    [a b]
+    (/ (* a b) (gcd a b)))
+
 (defn lcm
-  "Compute the lowest common multiple of two integers"
-  [a b]
-  (/ (* a b) (gcd a b)))
+  "LCM of two or more integers."
+  [& nums]
+  (reduce (fn [a b]
+            (if (or (zero? a) (zero? b))
+              0
+              (/ (abs (* (bigint a) b)) (gcd a b))))
+          nums))
 
 (defn mst-length
   "Compute the total edge length of the minimum spanning tree connecting
