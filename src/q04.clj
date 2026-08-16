@@ -18,15 +18,20 @@
     (->> (/ b a)
          (* 2025)
          int)))
-  
+
 (defn part2
   "Solution for part 2"
-  [fname])
-  
+  [fname]
+  (let [coll (read-data fname)
+         lcm (apply util/lcm coll)
+         [a b] ((juxt first last) (map (partial / lcm) coll))
+         r (/ b a)]
+    (inc (bigint (/ 10000000000000N r)))))
+
 (comment
   (def testf1 "data/q04_p1_test2.txt")
   (def inputf1 "data/q04_p1.txt")
-  (def testf2 "data/q04_p2_test.txt")
+  (def testf2 "data/q04_p1_test2.txt")
   (def inputf2 "data/q04_p2.txt")
 
   (part1 testf1)
