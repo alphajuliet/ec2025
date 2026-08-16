@@ -12,7 +12,6 @@
        first
        (map Integer/parseInt)))
 
-
 (defn part1
   "Solution for part 1"
   [fname]
