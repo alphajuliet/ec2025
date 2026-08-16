@@ -1,6 +1,5 @@
 (ns q03
-  (:require [clojure.string :as str]
-            [util :as util]))
+  (:require [clojure.string :as str]))
 
 (defn read-data
   "Read the input data"
@@ -22,7 +21,22 @@
 
 (defn part2
   "Solution for part 2"
-  [fname])
+  [fname]
+  (->> fname
+       read-data
+       set
+       vec
+       sort
+       (take 20)
+       (apply +)))
+
+(defn part3
+  [fname]
+  (->> fname
+       read-data
+       frequencies
+       vals
+       (apply max)))
 
 (comment
   (def testf1 "data/q03_p1_test.txt")
@@ -35,5 +49,12 @@
   (def inputf2 "data/q03_p2.txt")
 
   (part2 testf2)
-  (part2 inputf2))
+  (part2 inputf2)
+
+  (def testf3 "data/q03_p2_test.txt")
+  (def inputf3 "data/q03_p3.txt")
+
+  (part3 testf3)
+  (part3 inputf3))
+
 ;; The End
