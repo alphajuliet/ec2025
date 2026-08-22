@@ -8,12 +8,19 @@
         nums' (map Integer/parseInt (str/split nums #","))]
     nums'))
 
-;; Define the fishbone as a vector of nodes. Each node is a vector of length 3.
-;; The first example fishbone looks like this:
-;;   [[3 5 7] [1 8 10] [5 9 nil] [nil 7 8]]
+(defn read-data2
+  "Read the data for part 2"
+  [f]
+  (let [swords (->> f slurp str/split-lines)] 
+    (->> swords
+         (map (comp second #(str/split % #":")))
+         (map #(str/split % #","))
+         (util/mapmap Integer/parseInt))))
 
 (def not-nil? (comp not nil?))
 
+;; The first example fishbone looks like this:
+;;   [[3 5 7] [1 8 10] [5 9 nil] [nil 7 8]]
 (defn add-number
   "Recursively add a number x to the fishbone"
   [x fb i]
@@ -26,22 +33,42 @@
       ;; else try and fit x in the next node
       :else (add-number x fb (inc i)))))
 
+(defn create-fb
+  "Create a fishbone from a collection of numbers"
+  [v]
+  (reduce
+    (fn [t x] (add-number x t 0))
+    [[nil (first v) nil]]
+    (rest v)))
+
+(defn quality
+  "Get the quality from the fishbone"
+  [fb]
+  (->> fb
+       (map second)
+       (map str)
+       (apply str)
+       bigint))
+
+(defn range
+  [coll]
+  (- (apply max coll) (apply min coll)))
+
 (defn part1
   "Solution for part 1"
   [fname]
-  (let [v (read-data fname)
-        fb (reduce
-             (fn [t x] (add-number x t 0))
-             [[nil (first v) nil]]
-             (rest v))]
-    (->> fb
-         (map second)
-         (map str)
-         (apply str))))
+  (->> fname
+       read-data
+       create-fb
+       quality))
 
 (defn part2
   "Solution for part 2"
-  [fname])
+  [fname]
+  (->> fname
+       read-data2
+       (map (comp bigint quality create-fb))
+       range))
 
 (comment
   (def testf1 "data/q05_p1_test.txt")
