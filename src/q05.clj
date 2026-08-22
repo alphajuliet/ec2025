@@ -11,13 +11,14 @@
 (defn read-data2
   "Read the data for part 2"
   [f]
-  (let [swords (->> f slurp str/split-lines)] 
-    (->> swords
-         (map (comp second #(str/split % #":")))
-         (map #(str/split % #","))
-         (util/mapmap Integer/parseInt))))
-
-(def not-nil? (comp not nil?))
+  (let [swords (->> f slurp str/split-lines) 
+        lines (map #(str/split % #":") swords)
+        ids (map (comp Integer/parseInt first) lines)
+        nums (->> lines
+              (map second)
+              (map #(str/split % #","))
+              (util/mapmap Integer/parseInt))]
+     (map vector ids nums))) 
 
 ;; The first example fishbone looks like this:
 ;;   [[3 5 7] [1 8 10] [5 9 nil] [nil 7 8]]
@@ -50,7 +51,22 @@
        (apply str)
        bigint))
 
-(defn range
+(defn node-value
+  "Convert a node vector into a decimal"
+  [node]
+  (->> node
+       (remove nil?)
+       (apply str)
+       Integer/parseInt))
+
+(defn values
+  "Get the values of a fishbone"
+  [fb]
+  (->> fb
+       (mapv node-value)))
+
+(defn coll-range
+  "Calculate the range of the collection"
   [coll]
   (- (apply max coll) (apply min coll)))
 
@@ -67,18 +83,37 @@
   [fname]
   (->> fname
        read-data2
+       (map second)
        (map (comp bigint quality create-fb))
-       range))
+       coll-range))
+
+(defn part3
+  [fname]
+  (let [data (read-data2 fname)
+        ids (map first data)
+        fbs (map (comp create-fb second) data)
+        levels (map values fbs)
+        qualities (map quality fbs)]
+    (->> (map list ids levels qualities)
+         (sort-by (juxt util/third second first))
+         (map first)
+         reverse
+         (map * (range 1 (inc (count ids))))
+         (apply +))))
 
 (comment
   (def testf1 "data/q05_p1_test.txt")
   (def inputf1 "data/q05_p1.txt")
   (def testf2 "data/q05_p2_test.txt")
   (def inputf2 "data/q05_p2.txt")
+  (def testf3 "data/q05_p3_test.txt")
+  (def inputf3 "data/q05_p3.txt")
 
   (part1 testf1)
   (part1 inputf1)
-
   (part2 testf2)
-  (part2 inputf2))
+  (part2 inputf2)
+  (part3 testf3)
+  (part3 inputf3))
+
 ;; The End

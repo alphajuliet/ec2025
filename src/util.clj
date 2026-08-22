@@ -29,6 +29,8 @@
   (+ (Math/abs (- x1 x2))
      (Math/abs (- y1 y2))))
 
+(def third #(nth % 2))
+ 
 (defn gcd
   "Compute the greatest common divisor of two integers"
   [a b]
