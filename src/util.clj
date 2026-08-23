@@ -2,6 +2,11 @@
   (:require [clojure.core.matrix :as m]
             [clojure.string :as str]))
 
+(defn in?
+  "Is an element in the collection?"
+  [coll e]
+  (nat-int? (.indexOf coll e)))
+
 (defn mapmap
   "Map a function over a collection of collections"
   [f coll]
