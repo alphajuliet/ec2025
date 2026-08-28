@@ -43,16 +43,34 @@
         (filter #(apply intersects? %))
         count)))
 
+(defn part3
+  [fname]
+  (let [t (->> fname read-data (partition 2 1))
+        pairs (combo/combinations t 2)
+        p (->> pairs
+               (filter #(apply intersects? %)))]
+    (->> p
+         (apply concat)
+         frequencies
+         vals
+         (apply max))))
+
 (comment
   (def testf1 "data/q08_p1_test.txt")
   (def inputf1 "data/q08_p1.txt")
   (def testf2 "data/q08_p2_test.txt")
   (def inputf2 "data/q08_p2.txt")
+  (def testf3 "data/q08_p3_test.txt")
+  (def inputf3 "data/q08_p3.txt")
 
   (part1 testf1 8)
   (part1 inputf1 32)
 
   (part2 testf2)
-  (part2 inputf2))
+  (part2 inputf2)
+ 
+  (part3 testf3)
+  (part3 inputf3))
+  ;; not 2788
 
 ;; The End
