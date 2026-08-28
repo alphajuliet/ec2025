@@ -33,6 +33,38 @@
   (let [pairs (partition 2 1 (str/split word #""))]
     (every? #(apply produces? rules %) pairs)))
 
+(defn terminals
+  [rules]
+  (into #{} (remove rules (mapcat val rules))))
+
+(defn alphabet
+  "All symbols appearing in the rules (LHS or RHS)."
+  [rules]
+  (into (set (keys rules)) (mapcat val rules)))
+
+(defn step
+  [rules prev]
+  (into {} (for [[v ws] rules]
+             [v (reduce + (map #(prev % 0) ws))])))
+
+(defn count-range
+  "Number of strings of length m..n inclusive, generated from `start`."
+  [rules start m n]
+  (let [base (zipmap (alphabet rules) (repeat 1))]  ; layer 0 = single letters
+    (->> (iterate #(step rules %) base)             ; layer k = strings of length k+1
+         (take n)
+         (drop (dec m))                             ; discard layers below m
+         (map #(% start 0))
+         (reduce +))))
+
+(defn count-words
+  "Count valid words of total length m..n that have `word` as a prefix.
+  The last letter of `word` is shared with the first letter of the continuation."
+  [rules word m n]
+  (let [last-letter (str (last word))
+        len (count word)]
+    (count-range rules last-letter (- (inc m) len) (- (inc n) len))))
+
 (defn part1
   "Solution for part 1"
   [fname]
@@ -41,17 +73,49 @@
 
 (defn part2
   "Solution for part 2"
-  [fname])
+  [fname]
+  (let [[words rules] (read-data fname)]
+      (->> words
+           util/index-coll
+           (filter #(valid-word? rules (second %)))
+           (map first)
+           (apply +))))
+
+(defn minimal-words
+  "Keep only words that have no other word in `words` as a proper prefix.
+  Extensions of a dropped word are already counted under its shorter prefix."
+  [words]
+  (filter (fn [w]
+            (not-any? #(and (not= % w) (str/starts-with? w %)) words))
+          words))
+
+(defn part3
+  [fname]
+  (let [[words rules] (read-data fname)
+        valid (filter #(valid-word? rules %) words)]
+    (->> (minimal-words valid)
+         (map #(count-words rules % 7 11))
+         (reduce +))))
 
 (comment
   (def testf1 "data/q07_p1_test.txt")
   (def inputf1 "data/q07_p1.txt")
+
   (def testf2 "data/q07_p2_test.txt")
   (def inputf2 "data/q07_p2.txt")
+
+  (def testf31 "data/q07_p3_test1.txt")
+  (def testf32 "data/q07_p3_test2.txt")
+  (def inputf3 "data/q07_p3.txt")
 
   (part1 testf1)
   (part1 inputf1)
 
   (part2 testf2)
-  (part2 inputf2))
+  (part2 inputf2)
+
+  (part3 testf31)
+  (part3 testf32)
+  (part3 inputf3))
+ 
 ;; The End

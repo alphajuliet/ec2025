@@ -7,6 +7,11 @@
   [coll e]
   (nat-int? (.indexOf coll e)))
 
+(defn index-coll
+  "Add an index to each element in coll, starting at 1."
+  [coll]
+  (mapv vector (range 1 (inc (count coll))) coll))
+
 (defn mapmap
   "Map a function over a collection of collections"
   [f coll]
