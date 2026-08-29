@@ -7,6 +7,8 @@
   [coll e]
   (nat-int? (.indexOf coll e)))
 
+(def count-if (comp count filter))
+
 (defn index-coll
   "Add an index to each element in coll, starting at 1."
   [coll]
