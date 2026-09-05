@@ -42,15 +42,6 @@
         :when (bit-test (aget m w) b)]
     (+ (* 64 w) b)))
 
-(defn- C [n k]
-  (if (or (neg? k) (> k n)) 0N
-      (reduce (fn [acc i] (/ (*' acc (- n i)) (inc i))) 1N (range k))))
-
-(defn- runs-p [k b]
-  (if (< k 2) 1.0
-      (double (/ (reduce +' 0N (map #(C (dec k) %) (range (inc b))))
-                 (reduce *' 1N (repeat (dec k) 2N))))))
-
 (defn find-recombinants
   "strings: aligned, equal length. Returns triples ranked by significance.
   :max-uncovered  tolerate this many positions matching neither parent
@@ -73,8 +64,7 @@
                    k   (count inf)]
             :when (>= k min-informative)
             :let  [src (map #(if (bit-at? (d p1 c) %) :p2 :p1) inf)
-                   n1  (count (filter #{:p1} src))
-                   bp  (count (filter true? (map not= src (rest src))))]
+                   n1  (count (filter #{:p1} src))]
             :when (and (>= n1 min-contribution)
                        (>= (- k n1) min-contribution))]
         {:child (inc c) 
