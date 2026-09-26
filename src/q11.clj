@@ -69,7 +69,11 @@
 
 (defn part2
   "Solution for part 2"
-  [fname])
+  [fname]
+  (let [cols (read-data fname)
+        [cols' r1] (fixed-point phase1 cols)
+        [_ r2] (fixed-point phase2 cols')]
+    (+ r1 r2)))
 
 (comment
   (def testf1 "data/q11_p1_test.txt")
@@ -82,4 +86,5 @@
 
   (part2 testf2)
   (part2 inputf2))
+
 ;; The End
