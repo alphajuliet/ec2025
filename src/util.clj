@@ -9,6 +9,13 @@
 
 (def count-if (comp count filter))
 
+(defn score-posn
+  "Generate a scope as the dot product of the position and the numeric collection."
+  [coll]
+  (->> coll
+       (map * (range 1 (inc (count coll))))
+       (apply +)))
+
 (defn index-coll
   "Add an index to each element in coll, starting at 1."
   [coll]
