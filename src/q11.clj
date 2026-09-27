@@ -80,11 +80,14 @@
   (def inputf1 "data/q11_p1.txt")
   (def testf2 "data/q11_p2_test.txt")
   (def inputf2 "data/q11_p2.txt")
+  (def inputf3 "data/q11_p3.txt")
 
   (part1 testf1)
   (part1 inputf1)
 
   (part2 testf2)
-  (part2 inputf2))
+  (part2 inputf2)
+
+  (part2 inputf3))
 
 ;; The End
