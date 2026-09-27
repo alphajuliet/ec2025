@@ -1,8 +1,9 @@
 (ns q12
-  (:require [clojure.string :as str]
-            [clojure.core.matrix :as m]
-            [util :as util]
-            [search :as sch]))
+  (:require [clojure.core.matrix :as m]
+            [clojure.set :as set]
+            [clojure.string :as str]
+            [search :as sch]
+            [util :as util]))
 
 (defn read-data
   [f]
@@ -13,7 +14,7 @@
        (util/mapmap Integer/parseInt)))
 
 (defn neighbours
-  "Return the neighbours of the given location."
+  "Return the neighbours of the given location that are less than or equal to the current value."
   [m [rows cols] [r c]]
   (let [dirs [[-1 0] [0 -1] [0 1] [1 0]]
         nn (map (partial mapv + [r c]) dirs)
@@ -43,7 +44,12 @@
 
 (defn part2
   "Solution for part 2"
-  [fname])
+  [fname]
+  (let [barrels (read-data fname)
+        corner (map dec (m/shape barrels))]
+    (count 
+      (set/union (set (list-barrels barrels [0 0]))
+                 (set (list-barrels barrels corner))))))
 
 (comment
   (def testf1 "data/q12_p1_test.txt")
