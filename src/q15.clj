@@ -84,7 +84,7 @@
         end (last bb)]
     (-> (sch/shortest-path (partial neighbours (disj (set bb) end) dims)
                            (constantly 1) 
-                           1000 
+                           1000000
                            [0 0]
                            end)
         second
@@ -97,14 +97,12 @@
 
 (def testf1 "data/q15_p1_test.txt")
 (def inputf1 "data/q15_p1.txt")
-(def testf2 "data/q15_p2_test.txt")
 (def inputf2 "data/q15_p2.txt")
 
 (comment
   (part1 testf1)
   (part1 inputf1)
 
-  (part2 testf2)
-  (part2 inputf2))
+  (part1 inputf2))
 
 ;; The End
