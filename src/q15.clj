@@ -98,11 +98,12 @@
 (def testf1 "data/q15_p1_test.txt")
 (def inputf1 "data/q15_p1.txt")
 (def inputf2 "data/q15_p2.txt")
+(def inputf3 "data/q15_p3.txt")
 
 (comment
   (part1 testf1)
   (part1 inputf1)
-
-  (part1 inputf2))
+  (part1 inputf2)
+  (part1 inputf3)) ;; => OutOfMemoryError
 
 ;; The End
