@@ -2,6 +2,11 @@
   (:require [clojure.core.matrix :as m]
             [clojure.string :as str]))
 
+(defn argmax
+  "Return the index of the first instance of the maximum value in a collection."
+  [coll]
+  (.indexOf coll (apply max coll)))
+
 (defn in?
   "Is an element in the collection?"
   [coll e]

@@ -31,6 +31,13 @@
       (if (inside? org coord r) 1 0)) 
     m))
 
+(defn border-mask
+  "Iterate one radius increment"
+  [m org r]
+  (let [mask1 (area-mask m org r)
+        mask0 (area-mask m org (dec r))]
+    (m/sub mask1 mask0)))
+
 (defn part1
   "Solution for part 1"
   [fname]
@@ -38,11 +45,19 @@
         mask (area-mask m org 10)]
     (->> m
          (m/mul mask)
-         (m/esum))))
+         m/esum)))
 
 (defn part2
   "Solution for part 2"
-  [fname])
+  [fname]
+  (let [{:keys [m org shape]} (read-data fname)
+        scores (->> (range 1 (first shape))
+                    (map #(-> m 
+                           (m/mul (border-mask m org %)) 
+                           m/esum))) 
+        a (apply max scores)      
+        i (.indexOf scores a)]
+    (* a (inc i))))
   
 (def testf1 "data/q17_p1_test.txt")
 (def inputf1 "data/q17_p1.txt")
