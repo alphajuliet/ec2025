@@ -5,7 +5,7 @@
 
 (def plants
   (insta/parser
-    "<S> := (Plant|<NL>)+
+    "<S> := (Plant|<NL>)+ Tests?
      NL := '\n'
      Plant := Defn Branch+
      <Defn> := <'Plant '> Node <' with thickness '> Thickness <':'> <NL>
@@ -14,7 +14,9 @@
      Connect := <'- branch to Plant '> Node <' with thickness '> Thickness
      Thickness := Number
      Node := Number
-     <Number> := #'\\d+'"))
+     Tests := Test+
+     Test := (Number|<' '>)+ <NL>
+     <Number> := #'-?\\d+'"))
 
 (defn read-data
   [f]
@@ -28,7 +30,8 @@
           :Node Integer/parseInt
           :Thickness Integer/parseInt
           :Free #(vector 0 %1)
-          :Connect vector})
+          :Connect vector
+          :Test #(vec (map Integer/parseInt %&))})
       (apply concat)
       (concat [[0 {:thickness 1}]])))
 
@@ -41,22 +44,28 @@
 
 (defn energy
   "Calculate the energy through the graph"
-  [g start]
-  (let [pth (plant-thickness g start)
-        succ (uber/successors g start)
-        en-in (if (nil? succ)
-                pth
-                ;; else
-                (reduce
-                  (fn [acc n] 
-                    (let [en (energy g n)
-                          bth (uber/weight g [start n])]
-                      (+ acc (* bth en))))
-                  0
-                  succ))]
-     (if (< en-in pth)
-       0
-       en-in)))
+  [g start-node]
+  (let [pth (plant-thickness g start-node)
+        succ (uber/successors g start-node)
+        e-in (if (nil? succ)
+               pth
+               ;; else
+               (transduce (map #(* (uber/weight g [start-node %])
+                                   (energy g %)))
+                          + 
+                          succ))]
+    (if (< e-in pth)
+      0
+      e-in)))
+
+(defn apply-test
+  "Apply a test vector to the free branches in the graph."
+  [g testv]
+  (reduce
+    (fn [grph idx]
+      (uber/set-attrs grph [(inc idx) 0] {:weight (nth testv idx)}))  
+    g
+    (range (count testv))))
 
 (defn part1
   "Solution for part 1"
@@ -68,7 +77,17 @@
   
 (defn part2
   "Solution for part 2"
-  [fname])
+  [fname]
+  (let [d (->> fname read-data)
+        [gdata tests] (split-with #(not= :Tests %) d)
+        g (apply uber/digraph gdata)
+        last-node (apply max (uber/nodes g))]
+    (->> tests
+         rest
+         (map #(-> g
+                (apply-test %)
+                (energy last-node)))
+         (apply +))))
   
 (def testf1 "data/q18_p1_test.txt")
 (def inputf1 "data/q18_p1.txt")
@@ -76,10 +95,10 @@
 (def inputf2 "data/q18_p2.txt")
 
 (comment
-  (read-data testf1)
   (part1 testf1)
   (part1 inputf1)
 
   (part2 testf2)
   (part2 inputf2))
+
 ;; The End
