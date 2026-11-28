@@ -42,7 +42,7 @@
         soln (sch/shortest-path-1 (partial next-steps gaps)
                                   (fn [curr child]
                                     (if (< (second child) (second curr)) 0 1))
-                                  100000
+                                  1e6
                                   [0 0]
                                   #(>= (first %) lastx))]
     (->> soln
@@ -53,21 +53,21 @@
          first
          val)))
 
-(defn part2
-  "Solution for part 2"
-  [fname]
-  (part1 fname))
+(def part2 part1)
+(def part3 part1)
 
 (def testf1 "data/q19_p1_test.txt")
 (def inputf1 "data/q19_p1.txt")
 (def testf2 "data/q19_p2_test.txt")
 (def inputf2 "data/q19_p2.txt")
+(def inputf3 "data/q19_p3.txt")
 
 (comment
   (part1 testf1)
   (part1 inputf1)
 
   (part2 testf2)
-  (part2 inputf2))
+  (part2 inputf2)
 
+  (part3 inputf3))
 ;; The End
