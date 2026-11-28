@@ -22,9 +22,6 @@
     (or (empty? column-gaps)
         (boolean (some covers-y? column-gaps)))))
 
-(comment "Unit test"
-  (gap? z [7 1]))
-
 (defn next-steps
   "Return the options: flap up or coast down"
   [walls xy]
